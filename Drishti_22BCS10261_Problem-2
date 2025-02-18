@@ -1,0 +1,61 @@
+class Solution {
+public:
+    vector<vector<int>> getSkyline(vector<vector<int>>& build) {
+        vector<vector<int>> ans;
+        priority_queue<pair<int, int>> q;
+
+        int cur_h = 0;
+        int i = 0;
+        while(i < build.size()){
+
+            while(q.size() != 0 && q.top().second < build[i][0]){
+                int max_height_end_x = q.top().second;
+                q.pop();
+                while(q.size() > 0 && q.top().second <= max_height_end_x){
+                    q.pop();
+                }
+
+        
+                if(q.size() == 0){
+                    cur_h = 0;
+                }
+                else{
+                    cur_h = q.top().first;
+                }
+                ans.push_back({max_height_end_x, cur_h});
+            }
+
+        
+            if(build[i][2] > cur_h){
+                cur_h = build[i][2];
+                
+                
+                while(i < build.size() - 1 && build[i][0] == build[i+1][0]){
+                    cur_h = max(build[i+1][2], cur_h);
+                    q.push({build[i][2],build[i][1]});
+                    i++;
+                }
+                ans.push_back({build[i][0], cur_h});
+            }
+            q.push({build[i][2],build[i][1]});
+            i++;
+        }
+
+        while(q.size() != 0){
+            int max_height_end_x = q.top().second;
+            q.pop();
+            while(q.size() > 0 && q.top().second <= max_height_end_x){
+                q.pop();
+            }
+            if(q.size() == 0){
+                cur_h = 0;
+            }
+            else{
+                cur_h = q.top().first;
+            }
+            ans.push_back({max_height_end_x, cur_h});
+        }
+        return ans;
+
+    }
+}; 
